@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-
 // Philips Sonicare NFC Head Password calculation by @atc1441 Video manual: https://www.youtube.com/watch?v=EPytrn8i8sc
 
 uint16_t CRC16(uint16_t crc, uint8_t *buffer, int len) {
@@ -26,10 +25,14 @@ uint8_t nfc_second[] = "221214 12K";
 
 int main() {
   uint32_t crc_calc = CRC16(0x49A3, nfctag_uid, 7);
+  printf("crc_calc value on init: 0x%08X \r\n", crc_calc);
 
   crc_calc = crc_calc | (CRC16(crc_calc, nfc_second, 10) << 16);
+  printf("crc_calc value after or: 0x%08X \r\n", crc_calc);
 
   crc_calc = (crc_calc >> 8) & 0x00FF00FF | (crc_calc << 8) & 0xFF00FF00;
+  printf("crc_calc after 8 bit shift: 0x%08X \r\n", crc_calc >> 8);
+  printf("crc_calc value after rotate: 0x%08X \r\n", crc_calc);
 
   printf("by @ATC1441 NFC CRC : 0x%08X expected: 0x61F0A50F\r\n", crc_calc);
 
